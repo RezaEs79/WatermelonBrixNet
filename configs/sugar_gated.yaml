@@ -1,0 +1,28 @@
+experiment_name: "Sugar_Gated_EffV2_half"
+device: "cuda"
+
+dataset:
+  root_dir: "./data/processed_dataset"
+  val_split: 0.25
+  batch_size: 12  # کمتر به دلیل سنگینی EfficientNet
+  num_workers: 4
+  excluded_ids: [16, 20, 23, 24, 25, 31]
+  # 👇 این خط را اضافه کنید. اگر می‌خواهید رندوم باشد، این خط را پاک کنید یا [] بگذارید.
+  # fixed_val_ids: [4, 6, 7, 12, 13, 18, 19]
+  fixed_val_ids: [4, 5, 6, 7, 12, 13, 17, 18, 19, 26, 30, 34]
+
+model:
+  name: "gated"       # معماری EfficientNet + Gated Unit
+  type: "regression"  # پیش‌بینی عدد قند
+  num_classes: 1
+
+training:
+  epochs: 40
+  learning_rate: 0.0002
+  weight_decay: 0.001
+  save_dir: "./checkpoints"
+  use_weighted_loss: true # بالانس کردن داده‌ها
+
+audio:
+  sample_rate: 96000
+  duration: 1.0

@@ -1,0 +1,28 @@
+experiment_name: "Sugar_Swin_Tiny"
+device: "cuda"
+
+dataset:
+  root_dir: "./data/processed_dataset"
+  val_split: 0.25
+  batch_size: 10  # ترنسفورمرها حافظه زیادی می‌گیرند، شاید نیاز باشد کم کنید
+  num_workers: 2
+  excluded_ids: [16, 20, 23, 24, 25, 31]
+  fixed_val_ids: [4, 6, 7, 12, 13, 18, 19]
+
+model:
+  name: "swin"        # <--- مدل جدید
+  type: "regression"
+  num_classes: 1
+
+training:
+  epochs: 30          # ترنسفورمرها معمولاً زودتر همگرا می‌شوند یا نیاز به فاین‌تیون دقیق دارند
+  learning_rate: 0.0001 # نرخ یادگیری کمتر برای پایداری ترنسفورمر
+  weight_decay: 0.001
+  save_dir: "./checkpoints"
+  use_weighted_loss: true
+
+audio:
+  sample_rate: 96000
+  duration: 1.0
+  # 👇 تغییر مهم: افزایش سایز اسپکتروگرام برای Swin
+  img_size: [224, 224]

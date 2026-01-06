@@ -1,0 +1,26 @@
+experiment_name: "Redness_Fusion_ResNet"
+device: "cuda"
+
+dataset:
+  root_dir: "./data/processed_dataset"
+  val_split: 0.25
+  batch_size: 16
+  num_workers: 2
+  excluded_ids: [16, 20, 23, 24, 25, 31]
+  fixed_val_ids: [4, 6, 7, 12, 13, 18, 19]
+
+model:
+  name: "fusion"
+  type: "classification"
+  num_classes: 5
+
+training:
+  epochs: 35
+  learning_rate: 0.0003
+  weight_decay: 0.001
+  save_dir: "./checkpoints"
+  use_weighted_loss: true
+
+audio:
+  sample_rate: 96000
+  duration: 1.0
