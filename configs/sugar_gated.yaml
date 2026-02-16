@@ -4,16 +4,16 @@ device: "cuda"
 dataset:
   root_dir: "./data/processed_dataset"
   val_split: 0.25
-  batch_size: 12  # کمتر به دلیل سنگینی EfficientNet
+  batch_size: 12  # Lower due to heavier EfficientNet
   num_workers: 4
   excluded_ids: [16, 20, 23, 24, 25, 31]
-  # 👇 این خط را اضافه کنید. اگر می‌خواهید رندوم باشد، این خط را پاک کنید یا [] بگذارید.
+  # 👇 Add this line. If you want a random split, remove it or set to []
   # fixed_val_ids: [4, 6, 7, 12, 13, 18, 19]
   fixed_val_ids: [4, 5, 6, 7, 12, 13, 17, 18, 19, 26, 30, 34]
 
 model:
-  name: "gated"       # معماری EfficientNet + Gated Unit
-  type: "regression"  # پیش‌بینی عدد قند
+  name: "gated"       # Architecture: EfficientNet + Gated Unit
+  type: "regression"  # Predict sugar value (continuous)
   num_classes: 1
 
 training:
@@ -21,7 +21,7 @@ training:
   learning_rate: 0.0002
   weight_decay: 0.001
   save_dir: "./checkpoints"
-  use_weighted_loss: true # بالانس کردن داده‌ها
+  use_weighted_loss: true # Balance the dataset
 
 audio:
   sample_rate: 96000

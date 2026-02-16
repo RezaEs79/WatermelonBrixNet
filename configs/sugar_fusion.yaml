@@ -4,14 +4,14 @@ device: "cuda"
 dataset:
   root_dir: "./data/processed_dataset"
   val_split: 0.25
-  batch_size: 16  # بیشتر چون ResNet سبک‌تر است
+  batch_size: 16  # Higher since ResNet is lighter
   num_workers: 2
   excluded_ids: [16, 20, 23, 24, 25, 31]
   fixed_val_ids: [4, 6, 7, 12, 13, 18, 19]
   # fixed_val_ids: [4, 5, 6, 7, 12, 13, 17, 18, 19, 26, 30, 34]
 
 model:
-  name: "fusion"      # معماری ResNet + CBAM + Concat
+  name: "fusion"      # Architecture: ResNet + CBAM + Concat
   type: "regression"
   num_classes: 1
 

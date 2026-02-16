@@ -7,9 +7,11 @@ import warnings
 
 # --- 1. Suppress Specific Warnings ---
 warnings.filterwarnings('ignore')
-# هشدار مربوط به ناتوانی در لود اولیه و تلاش دوم
+
+# Warning related to initial load failure and fallback attempt
 warnings.filterwarnings("ignore", message="PySoundFile failed")
-# هشدارهای مربوط به نسخه‌های آینده کتابخانه
+
+# Warnings related to future library version changes
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 # --- CRITICAL FOR WSL: Use non-interactive backend ---
@@ -141,7 +143,7 @@ if __name__ == "__main__":
     parser.add_argument("--output", type=str, default=None, help="Custom output filename (optional)")
     args = parser.parse_args()
     
-    # تعیین نام فایل خروجی به صورت پویا اگر کاربر نامی نداده باشد
+    # Dynamically set the output filename if the user has not provided one
     if args.output is None:
         final_output = f"input_analysis_WM{args.id}.png"
     else:

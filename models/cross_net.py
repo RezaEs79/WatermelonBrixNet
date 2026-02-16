@@ -42,12 +42,14 @@ class CrossNet(nn.Module):
 
         # --- Audio Encoder (ResNet18 truncated) ---
         base_audio = models.resnet18(weights=models.ResNet18_Weights.IMAGENET1K_V1)
-        # حذف لایه‌های Pooling آخر (AvgPool + FC) برای حفظ ابعاد مکانی (4x4)
+        
+        # Remove the final pooling layers (AvgPool + FC) to preserve spatial dimensions (4x4)
         self.audio_extractor = nn.Sequential(*list(base_audio.children())[:-2]) 
         
         # --- Skin Encoder (ResNet18 truncated) ---
         base_skin = models.resnet18(weights=models.ResNet18_Weights.IMAGENET1K_V1)
-        # حذف لایه‌های Pooling آخر برای حفظ ابعاد مکانی (7x7)
+
+        # Remove the final pooling layers to preserve spatial dimensions (7x7)
         self.skin_extractor = nn.Sequential(*list(base_skin.children())[:-2]) 
 
         # --- Cross Attention Setup ---
@@ -56,7 +58,7 @@ class CrossNet(nn.Module):
         self.avg_pool = nn.AdaptiveAvgPool1d(1)
 
         # --- Fusion Head ---
-        # ورودی: 512 (Audio) + 512 (Skin) + 1 (Mass) = 1025
+        # Input: 512 (Audio) + 512 (Skin) + 1 (Mass) = 1025
         self.fusion_dim = 512 + 512 + 1
         
         self.head = nn.Sequential(
@@ -65,7 +67,7 @@ class CrossNet(nn.Module):
             nn.Dropout(0.3),
             nn.Linear(256, 64),
             nn.SiLU(),
-            nn.Linear(64, num_classes) # خروجی نهایی (1 یا 5)
+            nn.Linear(64, num_classes) # Final output (1 or 5)
         )
 
     def forward(self, audio, skin, mass):
@@ -81,7 +83,7 @@ class CrossNet(nn.Module):
         s_seq = s_feat_map.view(b, c, -1).permute(0, 2, 1)
 
         # 2. Cross Attention (Audio attends to Skin)
-        # خروجی: ویژگی‌های صدا که با اطلاعات تصویر اصلاح شده‌اند
+        # Output: audio features enriched with visual information
         a_enriched = self.cross_attn(query=a_seq, key_value=s_seq) # [B, 16, 512]
 
         # 3. Pooling (Sequence to Vector)

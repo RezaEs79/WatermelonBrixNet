@@ -16,17 +16,17 @@ import numpy as np
 import pandas as pd
 from data.dataset import create_metadata
 
-# تنظیم استایل
+# Set the visualization style
 sns.set_style("whitegrid")
 
 def add_labels(ax, max_height):
     """
-    نوشتن تعداد روی ستون‌ها با فاصله مناسب
+    Add value labels on top of bars up to a specified maximum height.
     """
     for p in ax.patches:
         height = p.get_height()
         if height > 0:
-            # فاصله کم و متناسب
+            # Small, proportional offset for label placement
             offset = max_height * 0.02 
             ax.text(p.get_x() + p.get_width() / 2., height + offset, 
                     int(height), ha="center", va="bottom", fontweight='bold', fontsize=10)
@@ -41,10 +41,10 @@ def plot_stats(data_dir, output_path):
         print("❌ No data found!")
         return
 
-    # حذف تکراری‌ها
+    # Remove duplicate samples
     df_unique = df_full.drop_duplicates(subset=['id']).copy()
     
-    # گرد کردن قند به عدد صحیح
+    # Round sugar content (Brix) to the nearest integer
     df_unique['brix'] = df_unique['brix'].round().astype(int)
 
     total_wms = len(df_unique)
@@ -56,7 +56,7 @@ def plot_stats(data_dir, output_path):
     # ==========================================
     # Plot 1: Sugar (Brix)
     # ==========================================
-    # استفاده از hue=x و legend=False برای طیف رنگی بدون وارنینگ
+    # Use hue=x and legend=False to apply a color gradient without warnings
     sns.countplot(data=df_unique, x='brix', ax=axes[0], palette='viridis', hue='brix', legend=False)
     
     mean_brix = df_unique['brix'].mean()
@@ -65,16 +65,17 @@ def plot_stats(data_dir, output_path):
     axes[0].set_xlabel('Brix Value')
     axes[0].set_ylabel('Count')
 
-    # محاسبه ارتفاع برای تنظیم کادر
+    # Compute the maximum bar height to adjust the plot limits
     max_h_brix = 0
     for p in axes[0].patches:
         if p.get_height() > max_h_brix: max_h_brix = p.get_height()
     
-    axes[0].set_ylim(0, max_h_brix * 1.15) # 15% فضای خالی بالا
+    # Add 15% headroom above the tallest bar
+    axes[0].set_ylim(0, max_h_brix * 1.15) 
     add_labels(axes[0], max_h_brix)
 
-    # --- نمایش عدد میانگین در گوشه نمودار ---
-    # مختصات (0.95, 0.95) یعنی گوشه بالا سمت راست
+    # --- Display the mean value in the corner of the plot ---
+    # (0.95, 0.95) corresponds to the top-right corner in axes coordinates
     axes[0].text(0.95, 0.95, f'Mean Brix: {mean_brix:.2f}', 
                  transform=axes[0].transAxes, 
                  ha='right', va='top', 
@@ -90,7 +91,7 @@ def plot_stats(data_dir, output_path):
     axes[1].set_xlabel('Redness Grade')
     axes[1].set_ylabel('Count')
 
-    # محاسبه ارتفاع
+    # Compute bar height 
     max_h_red = 0
     for p in axes[1].patches:
         if p.get_height() > max_h_red: max_h_red = p.get_height()

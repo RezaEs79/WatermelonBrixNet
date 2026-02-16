@@ -69,11 +69,8 @@ def get_audio_transforms(sample_rate, n_fft=4096, hop_length=1024, n_mels=128):
 # ==========================================
 # 2. Metadata Builder
 # ==========================================
-# (این تابع create_metadata بدون تغییر باقی می‌ماند، برای کوتاهی اینجا تکرار نکردم)
+# (The create_metadata function remains unchanged; omitted here for brevity)
 def create_metadata(root_dir, excluded_ids=None):
-    # ... (همان کد قبلی) ...
-    # برای اینکه کد کامل اجرا شود، فرض می‌کنیم کد قبلی اینجاست.
-    # اگر کل فایل را جایگزین می‌کنید، حتما کد create_metadata را از مرحله قبل اینجا بگذارید.
     if excluded_ids is None: excluded_ids = []
     data_records = []
     folders = sorted([f for f in os.listdir(root_dir) if f.startswith('watermelon')])

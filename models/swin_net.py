@@ -19,12 +19,12 @@ class SwinNet(nn.Module):
         # --- 3. Fusion Head (Simplified per Colab) ---
         self.fusion_dim = self.feat_dim * 2 + 1 # 1537
         
-        # ساختار دقیقاً منطبق با کد کولب شما:
+        # Architecture exactly matching your Colab implementation:
         self.head = nn.Sequential(
             nn.Linear(self.fusion_dim, 512),
             nn.GELU(),
             nn.Dropout(0.3),
-            nn.Linear(512, num_classes) # خروجی نهایی (1 یا 5)
+            nn.Linear(512, num_classes) # Final output (1 or 5)
         )
 
     def forward(self, audio, skin, mass):

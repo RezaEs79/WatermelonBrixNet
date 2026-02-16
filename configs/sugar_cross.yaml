@@ -10,13 +10,13 @@ dataset:
   fixed_val_ids: [4, 6, 7, 12, 13, 18, 19]
 
 model:
-  name: "cross"       # <--- مدل جدید
+  name: "cross"
   type: "regression"
   num_classes: 1
 
 training:
   epochs: 35
-  learning_rate: 0.0002 # کمی پایین‌تر برای پایداری Attention
+  learning_rate: 0.0002 # Slightly lower for Attention stability
   weight_decay: 0.001
   save_dir: "./checkpoints"
   use_weighted_loss: true
@@ -24,4 +24,3 @@ training:
 audio:
   sample_rate: 96000
   duration: 1.0
-  # در کد کولب سایز صدا همان 128x128 پیش‌فرض بود، پس نیازی به تغییر نیست

@@ -80,21 +80,21 @@ def train(config_path):
     
     # Split
     # ---------------------------------------------------------
-    # بخش تغییر یافته برای انتخاب دستی داده‌های ارزیابی (Validation)
+    # Modified section for manual selection of validation data
     # ---------------------------------------------------------
     unique_ids = df_full['id'].unique()
     
-    # 1. بررسی کن آیا در کانفیگ لیست دستی داده شده است؟
+    # 1. Check whether a fixed validation list is provided in the config
     fixed_val_ids = config['dataset'].get('fixed_val_ids', None)
     
     if fixed_val_ids and len(fixed_val_ids) > 0:
-        # حالت دستی (Manual)
+        # Manual mode
         val_ids = np.array(fixed_val_ids)
-        # هر چیزی که در val نیست، میره برای train
+        # Everything not in validation goes to training
         train_ids = np.array([uid for uid in unique_ids if uid not in val_ids])
         logger.info(f"📌 Using FIXED Validation Set (From Config)")
     else:
-        # حالت خودکار (Random Split)
+        # Automatic mode (Random Split)
         val_size = int(len(unique_ids) * config['dataset']['val_split'])
         train_size = len(unique_ids) - val_size
         np.random.seed(41)
@@ -102,7 +102,7 @@ def train(config_path):
         train_ids, val_ids = unique_ids[:train_size], unique_ids[train_size:]
         logger.info(f"🎲 Using RANDOM Validation Set (Split: {config['dataset']['val_split']})")
     
-    # نمایش آمار
+    # Display dataset statistics
     logger.info(f"Train IDs: {len(train_ids)} | Val IDs: {len(val_ids)}")
     clean_val_ids = sorted([int(x) for x in val_ids])
     logger.info(f"👉 Validation IDs: {clean_val_ids}")

@@ -7,14 +7,14 @@ dataset:
   batch_size: 12
   num_workers: 2
   excluded_ids: [16, 20, 23, 24, 25, 31]
-  # 👇 این خط را اضافه کنید. اگر می‌خواهید رندوم باشد، این خط را پاک کنید یا [] بگذارید.
+  # 👇 Add this line. If you want a random split, remove this line or set it to [].
   fixed_val_ids: [4, 6, 7, 12, 13, 18, 19]
   # Validation IDs: [1, 9, 10, 13, 19, 27, 32]
 
 model:
   name: "gated"
-  type: "classification" # دسته‌بندی کیفیت
-  num_classes: 5         # کلاس‌های 0 تا 4
+  type: "classification" # Quality classification
+  num_classes: 5         # Classes 0 through 4
 
 training:
   epochs: 40

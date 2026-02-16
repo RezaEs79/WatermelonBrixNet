@@ -4,19 +4,19 @@ device: "cuda"
 dataset:
   root_dir: "./data/processed_dataset"
   val_split: 0.25
-  batch_size: 10  # ترنسفورمرها حافظه زیادی می‌گیرند، شاید نیاز باشد کم کنید
+  batch_size: 10  # Transformers consume a lot of memory; may need to reduce
   num_workers: 2
   excluded_ids: [16, 20, 23, 24, 25, 31]
   fixed_val_ids: [4, 6, 7, 12, 13, 18, 19]
 
 model:
-  name: "swin"        # <--- مدل جدید
+  name: "swin"
   type: "regression"
   num_classes: 1
 
 training:
-  epochs: 30          # ترنسفورمرها معمولاً زودتر همگرا می‌شوند یا نیاز به فاین‌تیون دقیق دارند
-  learning_rate: 0.0001 # نرخ یادگیری کمتر برای پایداری ترنسفورمر
+  epochs: 30          # Transformers often converge faster or require careful fine-tuning
+  learning_rate: 0.0001 # Lower learning rate for transformer stability
   weight_decay: 0.001
   save_dir: "./checkpoints"
   use_weighted_loss: true
@@ -24,5 +24,5 @@ training:
 audio:
   sample_rate: 96000
   duration: 1.0
-  # 👇 تغییر مهم: افزایش سایز اسپکتروگرام برای Swin
+  # 👇 Important change: Increase spectrogram size for Swin
   img_size: [224, 224]

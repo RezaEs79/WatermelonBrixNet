@@ -32,7 +32,8 @@ SAMPLE_RATE = 96000
 DURATION = 1.0
 AUDIO_SIZE = (128, 128)
 IMG_SIZE = (224, 224)
-EXCLUDED_IDS = [16, 20, 23, 24, 25, 31]
+# EXCLUDED_IDS = [16, 20, 23, 24, 25, 31]
+EXCLUDED_IDS = [23, 31]
 
 # (Helper functions load_audio, segment_taps, prepare_batch remain the same - keep them!)
 def load_audio(file_path):
