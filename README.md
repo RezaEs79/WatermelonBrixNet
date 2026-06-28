@@ -8,11 +8,17 @@ The system leverages **computer vision**, **audio signal processing**, and **mul
 ---
 
 ## ✨ Features
-- Sugar (Brix) regression using image + audio data  
-- Redness classification of watermelon flesh  
-- Multimodal fusion (Gated / Feature Fusion)  
-- Support for CNNs, EfficientNetV2, MobileNet, ResNet, Swin Transformer  
-- Modular experiment-based training (no checkpoint conflicts)  
+
+
+- Continuous Sugar (Brix) Regression: Accurately predict Brix levels using multimodal inputs.
+
+- Ordinal Redness Classification: Automated CIELab-based grading for internal flesh quality (Grades 1 to 5). Evaluated using Exact and Off-by-One (±1) Accuracy.
+
+- Advanced Multimodal Fusion: Implementations of baseline Feature Fusion, Gated Multimodal Units (GMU), and Cross-Modal Attention.
+
+- State-of-the-art Backbones: Includes ResNet, EfficientNetV2, ConvNeXt, and Swin Transformers.
+
+- Scientific Evaluation Pipeline: Zero-leakage deterministic train/val splits, sample-level (per-watermelon) prediction aggregation, and generation of publication-ready metrics (MAE, RMSE, $R^2$, Exact Accuracy, Accuracy ±1, F1-Score).
 - End-to-end pipeline: dataset → training → validation → inference  
 
 ---
@@ -37,15 +43,27 @@ python -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA: {
 ```Bash
 Watermelon_Project/
 │
-├── configs/            # Experiment configurations (YAML)
-├── data/               # Dataset & preprocessing
-├── models/             # Model architectures
-├── utils/              # Helper utilities (metrics, plots, logging)
-├── checkpoints/        # Saved models (per experiment)
-├── outputs/            # Inference results & reports
-├── train.py            # Training loop
-├── inference.py        # Final inference
-└── valid.py            # Evaluation & validation
+├── configs/               # YAML experiment configurations (e.g., sugar_cross.yaml)
+├── data/                  # Dataset logic & PyTorch Dataset class
+├── models/                # Deep Learning architectures (Fusion, Gated, Swin, CrossAtt, ConvNeXt)
+├── src/                   # Core execution scripts
+│   ├── train.py                 # Main training loop with early stopping
+│   ├── compare_models.py        # Compares all Sugar models on shared Val set
+│   ├── compare_redness_models.py# Compares all Redness models on shared Val set
+│   ├── evaluate_per_melon.py    # Generates final Brix scatter plots (Sample-Level)
+│   ├── evaluate_redness.py      # Generates Redness confusion matrices (Sample-Level)
+│   ├── test.py                  # Blind inference on unlabelled data
+│   ├── valid.py                 # Legacy combined validation script
+│   ├── error_analysis.py        # Finds extreme prediction outliers
+│   └── visualize_Grad_CAM.py    # Explainable AI visualizer
+├── utils/                 # Helper utilities
+│   ├── data_organizer.py        # Parses raw folders
+│   ├── redness_grader.py        # Automated CIELab redness labeling
+│   ├── visualize_inputs.py      # Audio spectrogram & Skin visualizations
+│   └── visualize_distribution.py# Data distribution plotting
+├── checkpoints/           # Saved model weights (.pth files)
+└── outputs/               # Saved figures, CSV tables, and XAI heatmaps
+
 ```
 ---
 ## Dataset Preparation
@@ -80,7 +98,7 @@ python src/train.py --config configs/sugar_gated.yaml
 python src/train.py --config configs/sugar_fusion.yaml
 ```
 
-Redness Models
+Redness Classification Models:
 ```Bash
 python src/train.py --config configs/red_gated.yaml
 # Train Fusion Network for Redness Classification
@@ -154,11 +172,58 @@ Bright colors = higher energy (healthy signal)
 ```Bash
 python -m utils.visualize_distribution --output "watermelon_stats_final.png"
 ```
+---
+## 🔬 Scientific Evaluation & Analysis
+Once the models are trained, use these scripts to extract scientific metrics.
 
+#### 1. Generate Comparison Table (All Models)
+  - Creates a comprehensive table comparing MAE, RMSE, and R-Squared across all trained architectures.
+  
+  ```Bash
+  python src/compare_models.py
+  ```
+  - For Redness classification (Outputs Accuracy, Macro F1-Score):
+  ```
+  python src/compare_redness_models.py
+  ```
+####  2. Per-Melon Evaluation & Plotting
+
+Evaluates a single chosen model and generates high-quality visualizations.
+
+Brix Scatter Plot (Targeting Ideal Y=X Fit):
+```
+python src/evaluate_per_melon.py \
+  --config configs/sugar_cross.yaml \
+  --ckpt checkpoints/Sugar_CrossAtt/best.pth
+```
+#### 3. Evaluate a Single Model (Scatter Plot Generation)
+```Bash
+python src/evaluate.py \
+  --config configs/sugar_fusion.yaml \
+  --ckpt checkpoints/Sugar_Fusion_ResNet/best.pth
+```
+#### 4. Explainable AI (Grad-CAM)
+Visualize where the model is looking to make its prediction.
+```Bash
+
+python src/visualize_Grad_CAM.py \
+  --config configs/sugar_fusion.yaml \
+  --ckpt checkpoints/Sugar_Fusion_ResNet/best.pth \
+  --image_path data/processed_dataset/watermelon01_3kg_12Brix/Skin/IMG_1.jpg \
+  --audio_path data/processed_dataset/watermelon01_3kg_12Brix/011.m4a
+```
+#### 4. Error Analysis
+Find outliers and understand where the model struggles.
+```Bash
+
+python src/error_analysis.py \
+  --config configs/sugar_fusion.yaml \
+  --ckpt checkpoints/Sugar_Fusion_ResNet/best.pth
+```
 ---
 ## 🎯 Conclusion
 
-This project demonstrates a complete deep learning engineering pipeline, from dataset preparation to multimodal inference, using modern architectures and clean experiment management.
+This project demonstrates a complete deep learning engineering pipeline, from dataset preparation to multimodal inference, using modern architectures and clean experiment management. By moving from traditional feature extraction to advanced multimodal transformers and explainable AI, this project bridges the gap between agricultural research and modern artificial intelligence.
 
 
 ### 📜 License
@@ -168,4 +233,3 @@ MIT License
 ### 👤 Author
 
 RezaEs79
-
