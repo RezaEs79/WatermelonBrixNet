@@ -7,6 +7,7 @@ dataset:
   batch_size: 16
   num_workers: 2
   excluded_ids: [16, 20, 23, 24, 25, 31]
+  fixed_val_ids: [4, 6, 7, 12, 13, 18, 19]
 
 model:
   name: "convnext"

@@ -20,21 +20,25 @@ class GatedNet(nn.Module):
         self.gmu = GatedMultimodalUnit(input_dim=self.feat_dim, hidden_dim=512)
 
         # Head
+        # FIX: Changed the middle layer dimensions from 64 to 128 to match the saved checkpoint weights
         self.head = nn.Sequential(
             nn.Linear(512 + 1, 256),
             nn.SiLU(),
             nn.Dropout(0.3),
-            nn.Linear(256, 64),
+            nn.Linear(256, 128),         # Changed 64 -> 128
             nn.SiLU(),
-            nn.Linear(64, num_classes)
+            nn.Linear(128, num_classes)  # Changed 64 -> 128
         )
 
     def forward(self, audio, skin, mass):
+        # Extract features
         a_feat = self.audio_net(audio)
         s_feat = self.skin_net(skin)
         
+        # Apply Gated Multimodal Fusion
         fusion = self.gmu(a_feat, s_feat)
         
+        # Concatenate mass and pass to regression head
         final_input = torch.cat([fusion, mass], dim=1)
         
         return self.head(final_input)

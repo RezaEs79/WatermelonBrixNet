@@ -50,7 +50,7 @@ def plot_stats(data_dir, output_path):
     total_wms = len(df_unique)
     print(f"✅ Total Unique Watermelons: {total_wms}")
 
-    fig, axes = plt.subplots(1, 2, figsize=(16, 6))
+    fig, axes = plt.subplots(2, 1, figsize=(10, 14))
     fig.suptitle(f'Watermelon Dataset Statistics (Total: {total_wms})', fontsize=16)
 
     # ==========================================

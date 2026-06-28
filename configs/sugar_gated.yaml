@@ -8,8 +8,8 @@ dataset:
   num_workers: 4
   excluded_ids: [16, 20, 23, 24, 25, 31]
   # 👇 Add this line. If you want a random split, remove it or set to []
-  # fixed_val_ids: [4, 6, 7, 12, 13, 18, 19]
-  fixed_val_ids: [4, 5, 6, 7, 12, 13, 17, 18, 19, 26, 30, 34]
+  fixed_val_ids: [4, 6, 7, 12, 13, 18, 19]
+  # fixed_val_ids: [4, 5, 6, 7, 12, 13, 17, 18, 19, 26, 30, 34]
 
 model:
   name: "gated"       # Architecture: EfficientNet + Gated Unit

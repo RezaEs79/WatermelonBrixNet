@@ -34,9 +34,9 @@ ENV/
 conda_env/
 
 # ==========================================
-# 3. Project Data 
+# 1. Dataset (Avoid committing large files)
 # ==========================================
-# ما نمی‌خواهیم گیگابایت‌ها دیتا را در گیت ذخیره کنیم
+# We don't want gigabytes of data in Git
 data/processed_dataset/
 data/test
 data/raw/
@@ -44,21 +44,20 @@ data/raw/
 *.wav
 *.mp3
 
-# اگر می‌خواهید ساختار پوشه data حفظ شود اما محتویاتش آپلود نشود، این را نگه دارید:
-# (ولی معمولاً خود دیتاست را کامل ایگنور می‌کنند)
+# If you want to keep the folder structure but not its contents, keep this line:
+# (Usually, the dataset itself is completely ignored)
 
 # ==========================================
-# 4. Model Checkpoints (وزن‌های مدل)
+# 2. Model Checkpoints
 # ==========================================
-# فایل‌های .pth خیلی سنگین هستند
+# .pth/.pt/.ckpt files are very large
 checkpoints/
-# checkpoints/
 # *.pth
 # *.pt
 # *.ckpt
 
 # ==========================================
-# 5. Outputs & Logs (خروجی‌ها و گزارش‌ها)
+# 5. Outputs & Logs
 # ==========================================
 outputs/
 logs/
@@ -70,11 +69,11 @@ train_log.txt
 *.jpeg
 *.svg
 
-# استثنا: شاید بخواهید یک نمونه فایل csv را نگه دارید (اختیاری)
+# Exception: you might want to keep a sample CSV file (optional)
 # !data/sample_submission.csv
 
 # ==========================================
-# 6. IDE & Tools (تنظیمات ادیتورها)
+# 6. IDE & Tools
 # ==========================================
 .vscode/
 .idea/
