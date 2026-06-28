@@ -23,7 +23,7 @@ warnings.filterwarnings('ignore')
 warnings.filterwarnings("ignore", message="PySoundFile failed")
 warnings.filterwarnings("ignore", category=FutureWarning)
 
-from data.dataset import WatermelonDataset, create_metadata
+from data.dataset import WatermelonDataset, create_metadata, get_validation_split
 # Import factory function
 from models import build_model 
 
@@ -84,23 +84,9 @@ def train(config_path):
     # ---------------------------------------------------------
     unique_ids = df_full['id'].unique()
     
-    # 1. Check whether a fixed validation list is provided in the config
-    fixed_val_ids = config['dataset'].get('fixed_val_ids', None)
-    
-    if fixed_val_ids and len(fixed_val_ids) > 0:
-        # Manual mode
-        val_ids = np.array(fixed_val_ids)
-        # Everything not in validation goes to training
-        train_ids = np.array([uid for uid in unique_ids if uid not in val_ids])
-        logger.info(f"📌 Using FIXED Validation Set (From Config)")
-    else:
-        # Automatic mode (Random Split)
-        val_size = int(len(unique_ids) * config['dataset']['val_split'])
-        train_size = len(unique_ids) - val_size
-        np.random.seed(41)
-        np.random.shuffle(unique_ids)
-        train_ids, val_ids = unique_ids[:train_size], unique_ids[train_size:]
-        logger.info(f"🎲 Using RANDOM Validation Set (Split: {config['dataset']['val_split']})")
+    # Call central function
+    train_ids, val_ids, split_method = get_validation_split(unique_ids, config['dataset'])
+    logger.info(f"📌 Dataset Split Method: {split_method}")
     
     # Display dataset statistics
     logger.info(f"Train IDs: {len(train_ids)} | Val IDs: {len(val_ids)}")

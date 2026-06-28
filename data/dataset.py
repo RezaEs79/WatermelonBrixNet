@@ -12,6 +12,35 @@ from torch.utils.data import Dataset
 import torchaudio.transforms as AT
 import torchvision.transforms as VT
 
+import numpy as np
+
+# Global seed for entire project
+GLOBAL_SEED = 41 
+
+def get_validation_split(unique_ids, config_dataset):
+    """
+    Centralized function to split train/val to ensure zero data leakage.
+    Used by BOTH training and evaluation scripts.
+    """
+    fixed_val_ids = config_dataset.get('fixed_val_ids', None)
+    
+    if fixed_val_ids and len(fixed_val_ids) > 0:
+        val_ids = np.array(fixed_val_ids)
+        train_ids = np.array([uid for uid in unique_ids if uid not in val_ids])
+        return train_ids, val_ids, "FIXED"
+    else:
+        val_size = int(len(unique_ids) * config_dataset['val_split'])
+        train_size = len(unique_ids) - val_size
+        
+        # using constant seed for Repiting
+        np.random.seed(GLOBAL_SEED)
+        shuffled_ids = unique_ids.copy()
+        np.random.shuffle(shuffled_ids)
+        
+        train_ids = shuffled_ids[:train_size]
+        val_ids = shuffled_ids[train_size:]
+        return train_ids, val_ids, f"RANDOM (Seed: {GLOBAL_SEED})"
+
 # ==========================================
 # 1. Helper Functions (Audio Processing)
 # ==========================================
