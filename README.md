@@ -108,6 +108,15 @@ python src/train.py --config configs/red_fusion.yaml
 
 🔹 Each training run creates a separate experiment folder inside checkpoints/, ensuring results never overwrite each other.
 
+Note: The dataset split mechanism dynamically enforces zero data-leakage across all trained models.
+
+Full Dataset Training (100% Data for Production / Final Deployment):
+
+To train the best-performing architectures on the entire dataset without holding out a validation split:
+```Bash
+python src/train_full.py --config configs/sugar_fusion.yaml --epochs 25 --save_name best_full.pth
+python src/train_full.py --config configs/red_cross.yaml --epochs 25 --save_name best_full.pth
+```
 ---
 ## 🧪 Validation (Labeled Data)
 ```Bash
